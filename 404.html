@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>404</title>
+</head>
+<script type="text/javascript">
+	function loadCorrBg(){
+		//获取屏幕分辨率
+		var width = window.screen.width;
+		var height = window.screen.height;
+		var randomPicUrl = "https://source.unsplash.com/random/"+width+"x"+height;
+		document.body.style.backgroundImage = "url("+randomPicUrl+")";
+	}
+	
+	function loadCorrBg(){
+		var errorUrl = window.location.pathname;
+		if (errorUrl.indexOf("/")==-1) {
+			var ex = document.getElementById("explanation");
+			var er = document.getElementById("correct2");
+			ex.text="跳转至首页";
+			ex.style.display="none";
+		}
+	}
+	
+	function correct() {
+		var errorUrl = window.location.pathname;
+		var host = window.location.host;
+		if (errorUrl.indexOf("/")==-1) {
+			newUrl = host;
+		}else{
+			var filepath = errorUrl;
+			newUrl = "/blog"+filepath;
+		}
+		// alert(filepath+"\n"+newUrl);
+		window.open(newUrl);
+	}
+
+</script>
+<style type="text/css">
+	#error{
+		font-size: 200px;
+		color: white;
+		margin: 0 auto;
+		text-align: center;
+	}
+
+	#explanation{
+		font-family:黑体;
+		text-align: center;
+	}
+	
+	#center1{
+		margin-left: auto;
+		margin-right: auto;
+	}
+
+	#correct2{
+		font-family:黑体;
+		padding: 16px;
+		margin: 0 auto;
+		color: white;
+		background-color: pink;
+		width: 5%;
+		cursor: pointer;
+	}
+
+</style>
+<body onload="loadCorrBg()">
+	<p id="error">404</p>
+		<p id="explanation">2016-09-23 博客迁移到/blog/目录下，<br>点击下面按钮可直接跳转到正确的网页，给您带来不便深表歉意。</p>
+		<p id="correct2"  onclick="correct()"><a href="">正确跳转</a></p>
+</body>
+</html>

@@ -1,0 +1,1085 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/blog/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/blog/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/blog/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Hexo, NexT" />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/blog/favicon.ico?v=5.1.0" />
+
+
+
+
+
+
+<meta name="description" content="最近这一个月一直在做齐鲁软件设计大赛的项目，参赛题目是智能手机程序设计，今晚终于有时间有心情静下来写写物品竞拍流程所遇到的坑。其实用了三天空闲时间写完的。=.=  其实用了三天空闲时间写完的。=.=">
+<meta name="keywords">
+<meta property="og:type" content="article">
+<meta property="og:title" content="物品竞拍流程">
+<meta property="og:url" content="http://kiuber.me/blog/2016/09/01/coundown-mysql/index.html">
+<meta property="og:site_name" content="Kiuber">
+<meta property="og:description" content="最近这一个月一直在做齐鲁软件设计大赛的项目，参赛题目是智能手机程序设计，今晚终于有时间有心情静下来写写物品竞拍流程所遇到的坑。其实用了三天空闲时间写完的。=.=  其实用了三天空闲时间写完的。=.=">
+<meta property="og:updated_time" content="2017-04-10T08:54:20.970Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="物品竞拍流程">
+<meta name="twitter:description" content="最近这一个月一直在做齐鲁软件设计大赛的项目，参赛题目是智能手机程序设计，今晚终于有时间有心情静下来写写物品竞拍流程所遇到的坑。其实用了三天空闲时间写完的。=.=  其实用了三天空闲时间写完的。=.=">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/blog/',
+    scheme: 'Pisces',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://kiuber.me/blog/2016/09/01/coundown-mysql/"/>
+
+
+
+
+
+  <title> 物品竞拍流程 | Kiuber </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+            (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+          m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-97203653-1', 'auto');
+  ga('send', 'pageview');
+</script>
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/blog/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Kiuber</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/blog/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/blog/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tools">
+          <a href="/blog/tools" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-wrench"></i> <br />
+            
+            工具
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-blog">
+          <a href="/blog/some-master-blogs" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-star"></i> <br />
+            
+            博客
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/blog/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tv">
+          <a href="/blog/tv" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-television"></i> <br />
+            
+            电视直播
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tint">
+          <a href="/blog/tint" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tint"></i> <br />
+            
+            说说
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-picture">
+          <a href="/blog/picture" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-picture-o"></i> <br />
+            
+            图库
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-crawler">
+          <a href="/blog/crawler" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-smile-o"></i> <br />
+            
+            爬虫
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/blog/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br />
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocapitalize="off" autocomplete="off" autocorrect="off"
+             placeholder="搜索..." spellcheck="false"
+             type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://kiuber.me/blog/blog/2016/09/01/coundown-mysql/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Kiuber">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/blog/images/avatar.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Kiuber">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                物品竞拍流程
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2016-09-01T23:51:20+08:00">
+                2016-09-01
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a class="cloud-tie-join-count" href="/blog/2016/09/01/coundown-mysql/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count join-count" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <blockquote class="blockquote-center"><p>最近这一个月一直在做齐鲁软件设计大赛的项目，参赛题目是智能手机程序设计，今晚终于有时间有心情静下来写写物品竞拍流程所遇到的坑。其实用了三天空闲时间写完的。=.=</p>
+</blockquote>
+<p>其实用了三天空闲时间写完的。=.=</p>
+<a id="more"></a>
+<h2 id="具体的业务流程"><a href="#具体的业务流程" class="headerlink" title="具体的业务流程"></a>具体的业务流程</h2><p>A用户发起物品 –&gt;倒计时开始–&gt;其他用户交保证金–&gt;开始竞拍出价–&gt;五分钟内不能出价–&gt;倒计时结束–&gt;价高者胜出–&gt;生成订单–&gt;胜出者支付–&gt;A用户发快递–&gt;胜出者接收快递–&gt;胜出者确认收货</p>
+<h2 id="具体分析"><a href="#具体分析" class="headerlink" title="具体分析"></a>具体分析</h2><p>其中有7部分是主要的，看似复杂其实理清思路之后就是敲代码了。由于我们项目的数据是用的Bmob的，但是对于较大型的项目用第三方的平台确实是省了些硬件上的成本，但是从反面来说肯定也会增加代码的行数，毕竟用第三方的数据库不会由我们完全自定义。就这样数据分为两部分，文件数据及大部分数据保存在Bmob，一部分保存在自己的服务器。</p>
+<blockquote>
+<p>为什么要自己搭服务器？</p>
+</blockquote>
+<p>原因就是在业务流程上，当倒计时结束后既要将保证金退回，而且还要生成新的订单，用第三方的肯定实现不了服务器主动定时做一件事。</p>
+<blockquote>
+<p>服务器系统怎样实现定时主动做一件事？（三种方式整理于网络）</p>
+</blockquote>
+<ul>
+<li><h6 id="在WebService中开启线程"><a href="#在WebService中开启线程" class="headerlink" title="在WebService中开启线程"></a>在WebService中开启线程</h6></li>
+<li><h6 id="利用服务器系统计划任务"><a href="#利用服务器系统计划任务" class="headerlink" title="利用服务器系统计划任务"></a>利用服务器系统计划任务</h6></li>
+<li><h6 id="利用数据库事件实现"><a href="#利用数据库事件实现" class="headerlink" title="利用数据库事件实现"></a>利用数据库事件实现</h6></li>
+</ul>
+<h2 id="三种方式"><a href="#三种方式" class="headerlink" title="三种方式"></a>三种方式</h2><h3 id="1-在WebService中开启线程"><a href="#1-在WebService中开启线程" class="headerlink" title="1.在WebService中开启线程"></a>1.在WebService中开启线程</h3><h4 id="在查找众多关于C-线程资料之后，有三种方法。"><a href="#在查找众多关于C-线程资料之后，有三种方法。" class="headerlink" title="在查找众多关于C#线程资料之后，有三种方法。"></a>在查找众多关于C#线程资料之后，有三种方法。</h4><ul>
+<li>Thread</li>
+<li>Timer</li>
+<li>Thread包下的Timer</li>
+</ul>
+<p>三种方式中最后一种方式比较稳定，然后我将写好的WebService发布到服务器进行时间稳定性测试，结果发现最后一种5分钟内可以实现，40分钟将不能实现功能，因为业务需求中时间段最小还是6h，所以就没测试别的时间段。（PS：服务器系统参数 1G运内，1核，50G硬盘，只说参数不打广告 ): ）</p>
+<h3 id="2-利用操作系统（Windows）计划任务"><a href="#2-利用操作系统（Windows）计划任务" class="headerlink" title="2.利用操作系统（Windows）计划任务"></a>2.利用操作系统（Windows）计划任务</h3><p>计划任务程序位置： 控制面板–&gt;系统和安全–&gt;管理工具–&gt;计划任务程序</p>
+<p>桌面操作系统中有三种功能，分别是启动程序、<del>发送电子邮件</del>及<del>显示消息</del>。</p>
+<h3 id="3-利用数据库事件实现"><a href="#3-利用数据库事件实现" class="headerlink" title="3.利用数据库事件实现"></a>3.利用数据库事件实现</h3><h4 id="准备：-mysql5-5（5-1之前无事件功能）VS-xxxx-Navicat11"><a href="#准备：-mysql5-5（5-1之前无事件功能）VS-xxxx-Navicat11" class="headerlink" title="准备： mysql5.5（5.1之前无事件功能）VS xxxx Navicat11"></a>准备： mysql5.5（5.1之前无事件功能）VS xxxx Navicat11</h4><p>Navicat这个软件是数据库可视化工具，对于SQL语句基础不怎么好的，软件中的SQL预览可以帮助你。</p>
+<h4 id="思路"><a href="#思路" class="headerlink" title="思路"></a>思路</h4><p>WebService    –&gt;    Mysql Event    –&gt;    Mysql Produce    –&gt;    SQL Execute</p>
+<h4 id="连接数据库"><a href="#连接数据库" class="headerlink" title="连接数据库"></a>连接数据库</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">public class DBHelper&#123;</div><div class="line">	public static MySqlConnection ConnDB()</div><div class="line">        &#123;</div><div class="line">            String mysqlStr = &quot;Database=Commonweal;Data Source=127.0.0.1;User Id=root;Password=root;pooling=false;CharSet=utf8;port=3306;Allow User Variables=True;&quot;;</div><div class="line">            MySqlConnection conn = new MySqlConnection(mysqlStr);</div><div class="line">            conn.Open();</div><div class="line">            return conn;</div><div class="line">        &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>其中，当你写的要执行的SQL语句中包含”@”会被C#当为参数化进行SQL语句组装，防止SQL语句注入。<code>Data Source=127.0.0.1</code>值也可以填服务器运营商提供的外网IP，还需要在Mysql新建一个用户，设置用户名、密码，为了安全最好设置访问服务器的具体IP。这样的话WebService在本地测试就行，测试完成之后发布到服务器就行了，很方便的。</p>
+<h4 id="执行SQL语句"><a href="#执行SQL语句" class="headerlink" title="执行SQL语句"></a>执行SQL语句</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line">string sql = @&quot;insert into Good(G_ID, G_StartTime, G_EndTime, G_Status) values(&apos;&quot; + ObjectId + @&quot;&apos;, &apos;&quot; + NowTime + @&quot;&apos;, &apos;&quot; + EndTime + @&quot;&apos;, &apos;1&apos;);</div><div class="line">              CREATE EVENT `A_&quot; + NowTime + r.Next(10, 100) + @&quot;`</div><div class="line">              ON SCHEDULE AT &apos;&quot; + EndTime + @&quot;&apos;</div><div class="line">              ON COMPLETION NOT PRESERVE</div><div class="line">              ENABLE</div><div class="line">              DO</div><div class="line">              CALL Pro_EndTime(&apos;&quot; + ObjectId + @&quot;&apos;);</div><div class="line"></div><div class="line">              CREATE EVENT `B_&quot; + NowTime + r.Next(10, 100) + @&quot;`</div><div class="line">              ON SCHEDULE AT &apos;&quot; + EndTime2Hours + @&quot;&apos;</div><div class="line">              ON COMPLETION NOT PRESERVE</div><div class="line">              ENABLE</div><div class="line">              DO</div><div class="line">              CALL Pro_EndTime2Hours(&apos;&quot; + ObjectId + @&quot;&apos;);;</div><div class="line">              &quot;;</div><div class="line">              DBHelper.ExecuteSqlNoQuery(sql);</div></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">public class DBHelper&#123;      </div><div class="line">		 public static void ExecuteSqlNoQuery(string sql)</div><div class="line">       	&#123;</div><div class="line">             MySqlConnection conn = ConnDB();</div><div class="line">             MySqlCommand cmd = new MySqlCommand(sql, conn);</div><div class="line">             cmd.ExecuteNonQuery();</div><div class="line">             conn.Close();</div><div class="line">      		&#125;</div><div class="line">   &#125;</div></pre></td></tr></table></figure>
+<p>其中sql中@是转义不报错。</p>
+<h4 id="SQL中创建事件"><a href="#SQL中创建事件" class="headerlink" title="SQL中创建事件"></a>SQL中创建事件</h4><h5 id="先说下刚开始的一种思路所带来的坑"><a href="#先说下刚开始的一种思路所带来的坑" class="headerlink" title="先说下刚开始的一种思路所带来的坑"></a>先说下刚开始的一种思路所带来的坑</h5><p><strong>思路</strong>  WebService–&gt;Mysql事件–&gt;事件中的多条Sql语句–&gt;复杂的功能实现</p>
+<p>用这种方法，在事件下要写很多sql语句，如下代码块，在查找众多国内外网站之后想要在事件里执行多条语句需要在多条sql语句最前面和最后面分别加<strong>BEGIN和END</strong>，而且还要在事件最前端和最后端加入delimiter $$和$$ 作为界限符，这样看来既像存储过程然而也不完全是存储过程。但是在Navicat中不会报错，然后我就天真的以为完成了，但是将代码完全复制到WebService，将一些参数拼接起来，执行后，报代码错误。。。。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line">	delimiter $$</div><div class="line">CREATE EVENT `事件名`</div><div class="line">            ON SCHEDULE AT &apos;时间点&apos;</div><div class="line">            ON COMPLETION NOT PRESERVE</div><div class="line">            ENABLE</div><div class="line">            DO</div><div class="line">BEGIN</div><div class="line">            sql1;</div><div class="line">            sql2</div><div class="line">            sql3;</div><div class="line">            ...;</div><div class="line">END;</div><div class="line">$$</div></pre></td></tr></table></figure>
+<h5 id="另辟蹊径"><a href="#另辟蹊径" class="headerlink" title="另辟蹊径"></a>另辟蹊径</h5><p>WebService–&gt;Mysql事件–&gt;事件调用存储过程–&gt;复杂的功能实现</p>
+<h6 id="坑1："><a href="#坑1：" class="headerlink" title="坑1："></a>坑1：</h6><p>新建存储过程–&gt;添加存储过程参数，参数类型长度不会自动指定，而且也没有要填写参数长度的”()”，然后就一直报错。</p>
+<h6 id="坑2"><a href="#坑2" class="headerlink" title="坑2:"></a>坑2:</h6><p>执行存储过程，当有varchar类型一定要加单引号！！</p>
+<h6 id="WebService"><a href="#WebService" class="headerlink" title="WebService"></a>WebService</h6><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">string sql = @&quot;CREATE EVENT `A_&quot; + NowTime + r.Next(10, 100) + @&quot;`</div><div class="line">                ON SCHEDULE AT &apos;&quot; + EndTime + @&quot;&apos;</div><div class="line">                ON COMPLETION NOT PRESERVE</div><div class="line">                ENABLE</div><div class="line">                DO</div><div class="line">                CALL Pro_Test(&apos;&quot; + ObjectId + @&quot;&apos;);</div><div class="line">				&quot;;</div></pre></td></tr></table></figure>
+<h6 id="Mysql"><a href="#Mysql" class="headerlink" title="Mysql"></a>Mysql</h6><ul>
+<li>事件</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">CALL Pro_Test(&apos;IltR111A113&apos;)</div></pre></td></tr></table></figure>
+<ul>
+<li>存储过程</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">CREATE DEFINER = CURRENT_USER PROCEDURE `NewProc`(IN `id` varchar(20))</div><div class="line">BEGIN</div><div class="line">	UPDATE good_order</div><div class="line">SET O_Status = &apos;0&apos;</div><div class="line">WHERE</div><div class="line">	O_ID = Good_ID;</div><div class="line">END;</div></pre></td></tr></table></figure>
+<h5 id="小知识"><a href="#小知识" class="headerlink" title="小知识"></a>小知识</h5><h6 id="Mysql-1"><a href="#Mysql-1" class="headerlink" title="Mysql"></a>Mysql</h6><ul>
+<li>查看当前是否已开启事件调度器</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">SHOW VARIABLES LIKE &apos;event_scheduler&apos;</div></pre></td></tr></table></figure>
+<ul>
+<li>开启事件</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">SET GLOBAL event_scheduler = 1;</div></pre></td></tr></table></figure>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+  <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+    <div>坚持原创技术分享，您的支持将鼓励我继续创作！</div>
+    <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+      <span>赏</span>
+    </button>
+    <div id="QR" style="display: none;">
+      
+        <div id="wechat" style="display: inline-block">
+          <img id="wechat_qr" src="/blog/images/wechat-reward-image.png" alt="Kiuber WeChat Pay"/>
+          <p>微信打赏</p>
+        </div>
+      
+      
+        <div id="alipay" style="display: inline-block">
+          <img id="alipay_qr" src="/blog/images/alipay-reward-image.png" alt="Kiuber Alipay"/>
+          <p>支付宝打赏</p>
+        </div>
+      
+    </div>
+  </div>
+
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+        
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/blog/2016/09/22/centos7-mysql/" rel="next" title="Centos 7.2 安装MySQL及Navicat远程连接">
+                <i class="fa fa-chevron-left"></i> Centos 7.2 安装MySQL及Navicat远程连接
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/blog/2016/06/11/android-studio-adb-wifi/" rel="prev" title="Android Studio插件之ADB WIFI">
+                Android Studio插件之ADB WIFI <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div id="cloud-tie-wrapper" class="cloud-tie-wrapper"></div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/blog/images/avatar.png"
+               alt="Kiuber" />
+          <p class="site-author-name" itemprop="name">Kiuber</p>
+           
+              <p class="site-description motion-element" itemprop="description">不要怂就是干</p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/blog/archives">
+                <span class="site-state-item-count">27</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              
+                <span class="site-state-item-count">12</span>
+                <span class="site-state-item-name">分类</span>
+              
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/blog/tags/index.html">
+                <span class="site-state-item-count">28</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/Kiuber/" target="_blank" title="GitHub">
+                  
+                    <i class="fa fa-fw fa-github"></i>
+                  
+                  GitHub
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://weibo.com/u/2840614954/" target="_blank" title="Weibo">
+                  
+                    <i class="fa fa-fw fa-weibo"></i>
+                  
+                  Weibo
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="mailto:Kiuber.Zhang@gmail.com" target="_blank" title="Email">
+                  
+                    <i class="fa fa-fw fa-globe"></i>
+                  
+                  Email
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+          <div class="links-of-blogroll motion-element links-of-blogroll-block">
+            <div class="links-of-blogroll-title">
+              <i class="fa  fa-fw fa-globe"></i>
+              小伙伴们
+            </div>
+            <ul class="links-of-blogroll-list">
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://gudong.name/" title="咕咚" target="_blank">咕咚</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://bfchengnuo.info/" title="冰封承诺" target="_blank">冰封承诺</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://zjty5418.github.io/" title="龙啸天" target="_blank">龙啸天</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://www.missx.top/" title="国富" target="_blank">国富</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://hackone.cc/" title="h4ck0ne" target="_blank">h4ck0ne</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://qiuier.github.io/" title="林下清清" target="_blank">林下清清</a>
+                </li>
+              
+            </ul>
+          </div>
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#具体的业务流程"><span class="nav-number">1.</span> <span class="nav-text">具体的业务流程</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#具体分析"><span class="nav-number">2.</span> <span class="nav-text">具体分析</span></a><ol class="nav-child"><li class="nav-item nav-level-6"><a class="nav-link" href="#在WebService中开启线程"><span class="nav-number">2.0.0.0.1.</span> <span class="nav-text">在WebService中开启线程</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#利用服务器系统计划任务"><span class="nav-number">2.0.0.0.2.</span> <span class="nav-text">利用服务器系统计划任务</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#利用数据库事件实现"><span class="nav-number">2.0.0.0.3.</span> <span class="nav-text">利用数据库事件实现</span></a></li></ol></li></ol></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#三种方式"><span class="nav-number">3.</span> <span class="nav-text">三种方式</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-在WebService中开启线程"><span class="nav-number">3.1.</span> <span class="nav-text">1.在WebService中开启线程</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#在查找众多关于C-线程资料之后，有三种方法。"><span class="nav-number">3.1.1.</span> <span class="nav-text">在查找众多关于C#线程资料之后，有三种方法。</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-利用操作系统（Windows）计划任务"><span class="nav-number">3.2.</span> <span class="nav-text">2.利用操作系统（Windows）计划任务</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-利用数据库事件实现"><span class="nav-number">3.3.</span> <span class="nav-text">3.利用数据库事件实现</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#准备：-mysql5-5（5-1之前无事件功能）VS-xxxx-Navicat11"><span class="nav-number">3.3.1.</span> <span class="nav-text">准备： mysql5.5（5.1之前无事件功能）VS xxxx Navicat11</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#思路"><span class="nav-number">3.3.2.</span> <span class="nav-text">思路</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#连接数据库"><span class="nav-number">3.3.3.</span> <span class="nav-text">连接数据库</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#执行SQL语句"><span class="nav-number">3.3.4.</span> <span class="nav-text">执行SQL语句</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#SQL中创建事件"><span class="nav-number">3.3.5.</span> <span class="nav-text">SQL中创建事件</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#先说下刚开始的一种思路所带来的坑"><span class="nav-number">3.3.5.1.</span> <span class="nav-text">先说下刚开始的一种思路所带来的坑</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#另辟蹊径"><span class="nav-number">3.3.5.2.</span> <span class="nav-text">另辟蹊径</span></a><ol class="nav-child"><li class="nav-item nav-level-6"><a class="nav-link" href="#坑1："><span class="nav-number">3.3.5.2.1.</span> <span class="nav-text">坑1：</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#坑2"><span class="nav-number">3.3.5.2.2.</span> <span class="nav-text">坑2:</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#WebService"><span class="nav-number">3.3.5.2.3.</span> <span class="nav-text">WebService</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#Mysql"><span class="nav-number">3.3.5.2.4.</span> <span class="nav-text">Mysql</span></a></li></ol></li><li class="nav-item nav-level-5"><a class="nav-link" href="#小知识"><span class="nav-number">3.3.5.3.</span> <span class="nav-text">小知识</span></a><ol class="nav-child"><li class="nav-item nav-level-6"><a class="nav-link" href="#Mysql-1"><span class="nav-number">3.3.5.3.1.</span> <span class="nav-text">Mysql</span></a></li></ol></li></ol></li></ol></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy;  2016-4-22 - 
+  <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-Kiuber"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Kiuber</span>
+</div>
+
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Pisces
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+  
+
+
+
+  
+  <script type="text/javascript" src="/blog/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/blog/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/blog/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/blog/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/blog/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/blog/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+  
+  <script type="text/javascript" src="/blog/lib/canvas-ribbon/canvas-ribbon.js"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/blog/js/src/utils.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/blog/js/src/motion.js?v=5.1.0"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/blog/js/src/affix.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/blog/js/src/schemes/pisces.js?v=5.1.0"></script>
+
+
+
+  
+  <script type="text/javascript" src="/blog/js/src/scrollspy.js?v=5.1.0"></script>
+<script type="text/javascript" src="/blog/js/src/post-details.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/blog/js/src/bootstrap.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+    
+    <script>
+      var cloudTieConfig = {
+        url: document.location.href, 
+        sourceId: "",
+        productKey: "057c65df9e234746bfcf970b17a0e1eb",
+        target: "cloud-tie-wrapper"
+      };
+    </script>
+    <script src="https://img1.ws.126.net/f2e/tie/yun/sdk/loader.js"></script>
+  
+
+
+
+
+
+
+
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length == 0) {
+      search_path = "search.xml";
+    }
+    var path = "/blog/" + search_path;
+    // monitor main search box;
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.popup').toggle();
+    }
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+      $.ajax({
+        url: path,
+        dataType: "xml",
+        async: true,
+        success: function( xmlResponse ) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = $( "entry", xmlResponse ).map(function() {
+            return {
+              title: $( "title", this ).text(),
+              content: $("content",this).text(),
+              url: $( "url" , this).text()
+            };
+          }).get();
+          var $input = document.getElementById(search_id);
+          var $resultContent = document.getElementById(content_id);
+          $input.addEventListener('input', function(){
+            var matchcounts = 0;
+            var str='<ul class=\"search-result-list\">';
+            var keywords = this.value.trim().toLowerCase().split(/[\s\-]+/);
+            $resultContent.innerHTML = "";
+            if (this.value.trim().length > 1) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var content_index = [];
+                var data_title = data.title.trim().toLowerCase();
+                var data_content = data.content.trim().replace(/<[^>]+>/g,"").toLowerCase();
+                var data_url = decodeURIComponent(data.url);
+                var index_title = -1;
+                var index_content = -1;
+                var first_occur = -1;
+                // only match artiles with not empty titles and contents
+                if(data_title != '') {
+                  keywords.forEach(function(keyword, i) {
+                    index_title = data_title.indexOf(keyword);
+                    index_content = data_content.indexOf(keyword);
+                    if( index_title >= 0 || index_content >= 0 ){
+                      isMatch = true;
+                      if (i == 0) {
+                        first_occur = index_content;
+                      }
+                    }
+
+                  });
+                }
+                // show search results
+                if (isMatch) {
+                  matchcounts += 1;
+                  str += "<li><a href='"+ data_url +"' class='search-result-title'>"+ data_title +"</a>";
+                  var content = data.content.trim().replace(/<[^>]+>/g,"");
+                  if (first_occur >= 0) {
+                    // cut out 100 characters
+                    var start = first_occur - 20;
+                    var end = first_occur + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if(start == 0){
+                      end = 50;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    var match_content = content.substring(start, end);
+                    // highlight all keywords
+                    keywords.forEach(function(keyword){
+                      var regS = new RegExp(keyword, "gi");
+                      match_content = match_content.replace(regS, "<b class=\"search-keyword\">"+keyword+"</b>");
+                    });
+
+                    str += "<p class=\"search-result\">" + match_content +"...</p>"
+                  }
+                  str += "</li>";
+                }
+              })};
+            str += "</ul>";
+            if (matchcounts == 0) { str = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>' }
+            if (keywords == "") { str = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>' }
+            $resultContent.innerHTML = str;
+          });
+          proceedsearch();
+        }
+      });}
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched == false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(function(e){
+      $('.popup').hide();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    });
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

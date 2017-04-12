@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Document</title>
+    <script type="text/javascript">
+    function test() {
+        xmlHttp = GetXmlHttpObject();
+        if (xmlHttp == null) {
+            alert("Your browser does not support HTTP Request");
+            return;
+        }
+        var url = "get.php";
+        url = url + "?query" + "1";
+        xmlHttp.onreadystatechange = stateChanged;
+        xmlHttp.open("GET", url, true);
+        xmlHttp.send(null);
+    }
+
+    function stateChanged() {
+        if (xmlHttp.readyState == 4 || xmlHttp.readyState == "complete") {
+            document.getElementById("result").innerHTML = xmlHttp.responseText;
+        }
+    }
+
+    function GetXmlHttpObject() {
+        var xmlHttp = null;
+        try {
+            // Firefox, Opera 8.0+, Safari
+            xmlHttp = new XMLHttpRequest();
+        } catch (e) {
+            // Internet Explorer
+            try {
+                xmlHttp = new ActiveXObject("Msxml2.XMLHTTP");
+            } catch (e) {
+                xmlHttp = new ActiveXObject("Microsoft.XMLHTTP");
+            }
+        }
+        return xmlHttp;
+    }
+    </script>
+</head>
+
+<body onload="test()">
+    <div id="result">
+    </div>
+</body>
+
+</html>
