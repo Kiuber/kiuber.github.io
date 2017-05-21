@@ -94,7 +94,7 @@
 <meta property="og:url" content="http://kiuber.me/blog/2017/04/12/java-regex/index.html">
 <meta property="og:site_name" content="Kiuber">
 <meta property="og:description" content="JAVA-pattern">
-<meta property="og:updated_time" content="2017-04-12T12:41:09.318Z">
+<meta property="og:updated_time" content="2017-04-12T14:01:11.471Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="正则复习">
 <meta name="twitter:description" content="JAVA-pattern">
@@ -281,6 +281,16 @@
         </li>
       
         
+        <li class="menu-item menu-item-code">
+          <a href="/blog/code" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-code"></i> <br />
+            
+            代码片段
+          </a>
+        </li>
+      
+        
         <li class="menu-item menu-item-crawler">
           <a href="/blog/crawler" rel="section">
             
@@ -455,7 +465,20 @@
 <p>PatternSyntaxException：PatternSyntaxException是一个非强制异常类，表示正则表达式的语法错误。</p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</div><div class="line">        String regex = <span class="string">".*Kiuber.*"</span>;</div><div class="line">        Pattern pattern = Pattern.compile(regex);</div><div class="line">        String input = <span class="string">"i am Kiuber hello"</span>;</div><div class="line">        Matcher matcher = pattern.matcher(input);</div><div class="line">        System.out.println(<span class="string">"是否匹配："</span> + matcher.matches());</div><div class="line">        <span class="keyword">boolean</span> matches = Pattern.matches(regex, input);</div><div class="line">        System.out.println(<span class="string">"是否匹配："</span> + matches);</div><div class="line">    &#125;</div></pre></td></tr></table></figure>
 <h3 id="捕获组（分组）"><a href="#捕获组（分组）" class="headerlink" title="捕获组（分组）"></a>捕获组（分组）</h3><p>捕获组是把多个字符当一个单独的单元处理，通过括号分别分组。</p>
-<table>
+<p>例如，正则表达式(dog)创建了一个单一分组，这个分组包含”d”,”o”,”g”。</p>
+<p>捕获组是通过从左到右计算器开括号来编号的。</p>
+<p>例如（（A）（B（C））），共分为四个组。</p>
+<ul>
+<li>（（A）（B（C）））</li>
+<li>（A）</li>
+<li>（B（C））</li>
+<li>（C）</li>
+</ul>
+<p>可以调用matcher对象的groupCount方法查看表达式共有多少个分组</p>
+<p>特殊：group(0)，代表整个表达式，该组不在groupCount返回值中。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</div><div class="line">  		<span class="comment">// A零次或一次 B零次或多次 C一次或多次</span></div><div class="line">        String regex = <span class="string">"(A?(B*(C+)))"</span>;</div><div class="line">        Pattern pattern = Pattern.compile(regex);</div><div class="line">        Matcher matcher = pattern1.matcher(<span class="string">""</span>);</div><div class="line">        <span class="keyword">int</span> i = matcher.groupCount();</div><div class="line">        System.out.println(<span class="string">"组个数："</span> + i);</div><div class="line">    &#125;</div></pre></td></tr></table></figure>
+<p>输出”组个数：3”</p>
+<h3 id="正则表达式语法"><a href="#正则表达式语法" class="headerlink" title="正则表达式语法"></a>正则表达式语法</h3><table>
 <thead>
 <tr>
 <th style="text-align:center">字符</th>
@@ -495,6 +518,26 @@
 <td>零次或一次匹配前面的字符或子表达式，如”do(es)”匹配”do”和”does”，?等于{0,1}</td>
 </tr>
 <tr>
+<td style="text-align:center">{n}</td>
+<td style="text-align:center"></td>
+<td>n是非负整数，表示其前面的字符或子表达式正好匹配n次，如”o{2}”与”Bob”不匹配，但与”food”匹配</td>
+</tr>
+<tr>
+<td style="text-align:center">{n,}</td>
+<td style="text-align:center"></td>
+<td>n是非负整数，表示至少匹配n次，如”o{2}”与”Bob”不匹配，但与”fooooood”匹配，当n=0时相当于”*”，n=1时相当于”+”</td>
+</tr>
+<tr>
+<td style="text-align:center">{n,m}</td>
+<td style="text-align:center"></td>
+<td>n和m都为非负整数，其中n&lt;=m，至少匹配n次，至多匹配m次</td>
+</tr>
+<tr>
+<td style="text-align:center">?</td>
+<td style="text-align:center"></td>
+<td>当此字符紧随任何其他限定符（*、+、?、{*n*}、{<em>n</em>,}、{<em>n</em>,<em>m</em>}）之后时，匹配模式是”非贪心的”。”非贪心的”模式匹配搜索到的、尽可能短的字符串，而默认的”贪心的”模式匹配搜索到的、尽可能长的字符串。例如，在字符串”oooo”中，”o+?”只匹配单个”o”，而”o+”匹配所有”o”。</td>
+</tr>
+<tr>
 <td style="text-align:center">.</td>
 <td style="text-align:center"></td>
 <td>匹配除”\r\n”之外的任何单个字符，若要匹配的包括”\r\n”，使用[\s\S]。</td>
@@ -502,62 +545,45 @@
 <tr>
 <td style="text-align:center">(pattern)</td>
 <td style="text-align:center"></td>
-<td>匹配pattern并捕获该匹配的子表达式</td>
+<td></td>
 </tr>
 <tr>
-<td style="text-align:center"></td>
+<td style="text-align:center">(?:<em>pattern</em>)</td>
 <td style="text-align:center"></td>
 <td></td>
 </tr>
 <tr>
-<td style="text-align:center"></td>
-<td style="text-align:center"></td>
-<td></td>
-</tr>
-<tr>
-<td style="text-align:center"></td>
+<td style="text-align:center">(?=<em>pattern</em>)</td>
 <td style="text-align:center"></td>
 <td></td>
 </tr>
 <tr>
-<td style="text-align:center"></td>
-<td style="text-align:center"></td>
-<td></td>
-</tr>
-<tr>
-<td style="text-align:center"></td>
+<td style="text-align:center">(?!<em>pattern</em>)</td>
 <td style="text-align:center"></td>
 <td></td>
 </tr>
 <tr>
-<td style="text-align:center"></td>
-<td style="text-align:center"></td>
+<td style="text-align:center">x\</td>
+<td style="text-align:center">y</td>
 <td></td>
+<td>匹配x或y，”z\</td>
+<td>food”匹配”z”或”food”，”(z\</td>
+<td>f)ood”匹配”zood”或”food”</td>
 </tr>
 <tr>
+<td style="text-align:center">[xyz]</td>
 <td style="text-align:center"></td>
-<td style="text-align:center"></td>
-<td></td>
+<td>字符集。匹配中括号中的任一字符，如”[abr]”匹配”Kiuber”中的”r”</td>
 </tr>
 <tr>
+<td style="text-align:center">[^xyz]</td>
 <td style="text-align:center"></td>
-<td style="text-align:center"></td>
-<td></td>
+<td>反向字符集。匹配未包含的任何字符，如”[^abr]“匹配”Kiuber”中的”K”，”i”，”u”，”b”，”e”</td>
 </tr>
 <tr>
+<td style="text-align:center">[a-z]</td>
 <td style="text-align:center"></td>
-<td style="text-align:center"></td>
-<td></td>
-</tr>
-<tr>
-<td style="text-align:center"></td>
-<td style="text-align:center"></td>
-<td></td>
-</tr>
-<tr>
-<td style="text-align:center"></td>
-<td style="text-align:center"></td>
-<td></td>
+<td>字符范围</td>
 </tr>
 </tbody>
 </table>
@@ -617,6 +643,10 @@
       
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
+            
+              <a href="/blog/2017/05/10/smb/" rel="next" title="Samba的简单使用">
+                <i class="fa fa-chevron-left"></i> Samba的简单使用
+              </a>
             
           </div>
 
@@ -700,7 +730,7 @@
           
             <div class="site-state-item site-state-posts">
               <a href="/blog/archives">
-                <span class="site-state-item-count">27</span>
+                <span class="site-state-item-count">28</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
@@ -711,7 +741,7 @@
             
             <div class="site-state-item site-state-categories">
               
-                <span class="site-state-item-count">12</span>
+                <span class="site-state-item-count">11</span>
                 <span class="site-state-item-name">分类</span>
               
             </div>
@@ -722,7 +752,7 @@
             
             <div class="site-state-item site-state-tags">
               <a href="/blog/tags/index.html">
-                <span class="site-state-item-count">28</span>
+                <span class="site-state-item-count">29</span>
                 <span class="site-state-item-name">标签</span>
               </a>
             </div>
@@ -820,7 +850,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#正则表达式实例"><span class="nav-number">1.</span> <span class="nav-text">正则表达式实例</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#捕获组（分组）"><span class="nav-number">2.</span> <span class="nav-text">捕获组（分组）</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#正则表达式实例"><span class="nav-number">1.</span> <span class="nav-text">正则表达式实例</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#捕获组（分组）"><span class="nav-number">2.</span> <span class="nav-text">捕获组（分组）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#正则表达式语法"><span class="nav-number">3.</span> <span class="nav-text">正则表达式语法</span></a></li></ol></div>
             
 
           </div>
