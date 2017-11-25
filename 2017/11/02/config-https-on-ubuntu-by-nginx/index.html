@@ -1,0 +1,1249 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+  <link href="http://cdn.staticfile.org/fancybox/2.1.5/jquery.fancybox.min.css" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+
+
+
+
+
+  
+
+<link href="http://cdn.staticfile.org/font-awesome/4.6.2/css/font-awesome.min.css" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.3" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png?v=5.1.3">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32.png?v=5.1.3">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16.png?v=5.1.3">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.3" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Linux,Ubuntu,https," />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="sudo nginx -s reload">
+<meta name="keywords" content="Linux,Ubuntu,https">
+<meta property="og:type" content="article">
+<meta property="og:title" content="在 Ubuntu 通过 nginx 配置 https">
+<meta property="og:url" content="http://blog.kiuber.me/2017/11/02/config-https-on-ubuntu-by-nginx/index.html">
+<meta property="og:site_name" content="Kiuber&#39;s Blog">
+<meta property="og:description" content="sudo nginx -s reload">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2017-11-19T05:01:53.789Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="在 Ubuntu 通过 nginx 配置 https">
+<meta name="twitter:description" content="sudo nginx -s reload">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '5.1.3',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://blog.kiuber.me/2017/11/02/config-https-on-ubuntu-by-nginx/"/>
+
+
+
+
+
+  <title>在 Ubuntu 通过 nginx 配置 https | Kiuber's Blog</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Kiuber's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-resume">
+          <a href="http://resume.kiuber.me" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-file-text"></i> <br />
+            
+            简历
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-master">
+          <a href="/master/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-star"></i> <br />
+            
+            膜拜
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br />
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off"
+             placeholder="搜索..." spellcheck="false"
+             type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://blog.kiuber.me/2017/11/02/config-https-on-ubuntu-by-nginx/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Kiuber">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Kiuber's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">在 Ubuntu 通过 nginx 配置 https</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-11-02T19:25:05+08:00">
+                2017-11-02
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Https/" itemprop="url" rel="index">
+                    <span itemprop="name">Https</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+            <span class="post-meta-divider">|</span>
+            <span class="page-pv">本文总阅读量
+            <span class="busuanzi-value" id="busuanzi_value_page_pv" ></span>次
+            </span>
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <blockquote class="blockquote-center"><p>sudo nginx -s reload</p>
+</blockquote>
+<a id="more"></a>
+<p>由于微信小程序之前的服务器即将到期，现迁移服务器应用到一台 ubuntu 服务器，由于之前服务器是 centos ，迁移过程多少出现了些问题。以后用了 docker 就不会有这样的问题了吧，不过只是刚开始学 docker ，以后再弄吧。</p>
+<h3 id="环境"><a href="#环境" class="headerlink" title="环境"></a>环境</h3><h4 id="centos"><a href="#centos" class="headerlink" title="centos"></a>centos</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">[root@VM_11_73_centos ~]<span class="comment"># nginx -v</span></div><div class="line">nginx version: nginx/1.10.2</div></pre></td></tr></table></figure>
+<h4 id="ubuntu"><a href="#ubuntu" class="headerlink" title="ubuntu"></a>ubuntu</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">ubuntu@VM-214-51-ubuntu:~$ nginx -v</div><div class="line">nginx version: nginx/1.10.3 (Ubuntu)</div></pre></td></tr></table></figure>
+<h3 id="Centos-nginx-配置"><a href="#Centos-nginx-配置" class="headerlink" title="Centos nginx 配置"></a>Centos nginx 配置</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div><div class="line">73</div><div class="line">74</div><div class="line">75</div><div class="line">76</div><div class="line">77</div><div class="line">78</div><div class="line">79</div><div class="line">80</div><div class="line">81</div><div class="line">82</div><div class="line">83</div><div class="line">84</div><div class="line">85</div><div class="line">86</div><div class="line">87</div><div class="line">88</div></pre></td><td class="code"><pre><div class="line">user nginx;</div><div class="line">worker_processes auto;</div><div class="line">error_log /var/<span class="built_in">log</span>/nginx/error.log;</div><div class="line">pid /run/nginx.pid;</div><div class="line"></div><div class="line"><span class="comment"># Load dynamic modules. See /usr/share/nginx/README.dynamic.</span></div><div class="line">include /usr/share/nginx/modules/*.conf;</div><div class="line"></div><div class="line">events &#123;</div><div class="line">    worker_connections 1024;</div><div class="line">&#125;</div><div class="line"></div><div class="line">http &#123;</div><div class="line">    log_format  main  <span class="string">'$remote_addr - $remote_user [$time_local] "$request" '</span></div><div class="line">                      <span class="string">'$status $body_bytes_sent "$http_referer" '</span></div><div class="line">                      <span class="string">'"$http_user_agent" "$http_x_forwarded_for"'</span>;</div><div class="line"></div><div class="line">    access_log  /var/<span class="built_in">log</span>/nginx/access.log  main;</div><div class="line"></div><div class="line">    sendfile            on;</div><div class="line">    tcp_nopush          on;</div><div class="line">    tcp_nodelay         on;</div><div class="line">    keepalive_timeout   65;</div><div class="line">    types_hash_max_size 2048;</div><div class="line"></div><div class="line">    include             /etc/nginx/mime.types;</div><div class="line">    default_type        application/octet-stream;</div><div class="line"></div><div class="line">    <span class="comment"># Load modular configuration files from the /etc/nginx/conf.d directory.</span></div><div class="line">    <span class="comment"># See http://nginx.org/en/docs/ngx_core_module.html#include</span></div><div class="line">    <span class="comment"># for more information.</span></div><div class="line">    include /etc/nginx/conf.d/*.conf;</div><div class="line"></div><div class="line">    server &#123;</div><div class="line">        listen       80 default_server;</div><div class="line">        listen       [::]:80 default_server;</div><div class="line">        server_name  _;</div><div class="line">        root         /usr/share/nginx/html;</div><div class="line"></div><div class="line">        <span class="comment"># Load configuration files for the default server block.</span></div><div class="line">        include /etc/nginx/default.d/*.conf;</div><div class="line"></div><div class="line">        location / &#123;</div><div class="line">                proxy_pass http://127.0.0.1:8080;</div><div class="line">        &#125;</div><div class="line"></div><div class="line">        error_page 404 /404.html;</div><div class="line">            location = /40x.html &#123;</div><div class="line">        &#125;</div><div class="line"></div><div class="line">        error_page 500 502 503 504 /50x.html;</div><div class="line">            location = /50x.html &#123;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line"></div><div class="line"><span class="comment"># Settings for a TLS enabled server.</span></div><div class="line"></div><div class="line">    server &#123;</div><div class="line">        listen       443 ssl http2 default_server;</div><div class="line">        listen       [::]:443 ssl http2 default_server;</div><div class="line">        server_name  _;</div><div class="line">        root         /usr/share/nginx/html;</div><div class="line"></div><div class="line">        ssl_certificate <span class="string">"crt file path"</span>;</div><div class="line">        ssl_certificate_key <span class="string">"key file path"</span>;</div><div class="line">        ssl_session_cache shared:SSL:1m;</div><div class="line">        ssl_session_timeout  10m;</div><div class="line">        <span class="comment">#        ssl_ciphers HIGH:!aNULL:!MD5;</span></div><div class="line">        ssl_protocols TLSv1 TLSv1.1 TLSv1.2; <span class="comment">#按照这个协议配置</span></div><div class="line">        ssl_ciphers ECDHE-RSA-AES128-GCM-SHA256:HIGH:!aNULL:!MD5:!RC4:!DHE;<span class="comment">#按照这个套件配置</span></div><div class="line">        ssl_prefer_server_ciphers on;</div><div class="line"></div><div class="line">        <span class="comment"># Load configuration files for the default server block.</span></div><div class="line">        include /etc/nginx/default.d/*.conf;</div><div class="line"></div><div class="line">        location / &#123;</div><div class="line">                proxy_pass http://127.0.0.1:8080;</div><div class="line">        &#125;</div><div class="line"></div><div class="line">        error_page 404 /404.html;</div><div class="line">            location = /40x.html &#123;</div><div class="line">        &#125;</div><div class="line"></div><div class="line">        error_page 500 502 503 504 /50x.html;</div><div class="line">            location = /50x.html &#123;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h3 id="Ubuntu-默认配置"><a href="#Ubuntu-默认配置" class="headerlink" title="Ubuntu 默认配置"></a>Ubuntu 默认配置</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div><div class="line">73</div><div class="line">74</div><div class="line">75</div><div class="line">76</div><div class="line">77</div><div class="line">78</div><div class="line">79</div><div class="line">80</div><div class="line">81</div><div class="line">82</div><div class="line">83</div><div class="line">84</div></pre></td><td class="code"><pre><div class="line">user www-data;</div><div class="line">worker_processes auto;</div><div class="line">pid /run/nginx.pid;</div><div class="line"></div><div class="line">events &#123;</div><div class="line">        worker_connections 768;</div><div class="line">        <span class="comment"># multi_accept on;</span></div><div class="line">&#125;</div><div class="line"></div><div class="line">http &#123;</div><div class="line">        <span class="comment">##</span></div><div class="line">        <span class="comment"># Basic Settings</span></div><div class="line">        <span class="comment">##</span></div><div class="line"></div><div class="line">        sendfile on;</div><div class="line">        tcp_nopush on;</div><div class="line">        tcp_nodelay on;</div><div class="line">        keepalive_timeout 65;</div><div class="line">        types_hash_max_size 2048;</div><div class="line">        <span class="comment"># server_tokens off;</span></div><div class="line"></div><div class="line">        <span class="comment"># server_names_hash_bucket_size 64;</span></div><div class="line">        <span class="comment"># server_name_in_redirect off;</span></div><div class="line"></div><div class="line">        include /etc/nginx/mime.types;</div><div class="line">        default_type application/octet-stream;</div><div class="line"></div><div class="line">        <span class="comment">##</span></div><div class="line">        <span class="comment"># SSL Settings</span></div><div class="line">        <span class="comment">##</span></div><div class="line"></div><div class="line">        ssl_protocols TLSv1 TLSv1.1 TLSv1.2; <span class="comment"># Dropping SSLv3, ref: POODLE</span></div><div class="line">        ssl_prefer_server_ciphers on;</div><div class="line"></div><div class="line">        <span class="comment">##</span></div><div class="line">        <span class="comment"># Logging Settings</span></div><div class="line">        <span class="comment">##</span></div><div class="line"></div><div class="line">        access_log /var/<span class="built_in">log</span>/nginx/access.log;</div><div class="line">        error_log /var/<span class="built_in">log</span>/nginx/error.log;</div><div class="line"></div><div class="line">        <span class="comment">##</span></div><div class="line">        <span class="comment"># Gzip Settings</span></div><div class="line">        <span class="comment">##</span></div><div class="line"></div><div class="line">        gzip on;</div><div class="line">        gzip_disable <span class="string">"msie6"</span>;</div><div class="line"></div><div class="line">        <span class="comment"># gzip_vary on;</span></div><div class="line">        <span class="comment"># gzip_proxied any;</span></div><div class="line">        <span class="comment"># gzip_comp_level 6;</span></div><div class="line">        <span class="comment"># gzip_buffers 16 8k;</span></div><div class="line">        <span class="comment"># gzip_http_version 1.1;</span></div><div class="line">        <span class="comment"># gzip_types text/plain text/css application/json application/javascript text/xml application/xml application/xml+rss text/javascript;</span></div><div class="line"></div><div class="line">        <span class="comment">##</span></div><div class="line">        <span class="comment"># Virtual Host Configs</span></div><div class="line">        <span class="comment">##</span></div><div class="line"></div><div class="line">        include /etc/nginx/conf.d/*.conf;</div><div class="line">        include /etc/nginx/sites-enabled/*;</div><div class="line">&#125;</div><div class="line"></div><div class="line"></div><div class="line"><span class="comment">#mail &#123;</span></div><div class="line"><span class="comment">#       # See sample authentication script at:</span></div><div class="line"><span class="comment">#       # http://wiki.nginx.org/ImapAuthenticateWithApachePhpScript</span></div><div class="line"><span class="comment">#</span></div><div class="line"><span class="comment">#       # auth_http localhost/auth.php;</span></div><div class="line"><span class="comment">#       # pop3_capabilities "TOP" "USER";</span></div><div class="line"><span class="comment">#       # imap_capabilities "IMAP4rev1" "UIDPLUS";</span></div><div class="line"><span class="comment">#</span></div><div class="line"><span class="comment">#       server &#123;</span></div><div class="line"><span class="comment">#               listen     localhost:110;</span></div><div class="line"><span class="comment">#               protocol   pop3;</span></div><div class="line"><span class="comment">#               proxy      on;</span></div><div class="line"><span class="comment">#       &#125;</span></div><div class="line"><span class="comment">#</span></div><div class="line"><span class="comment">#       server &#123;</span></div><div class="line"><span class="comment">#               listen     localhost:143;</span></div><div class="line"><span class="comment">#               protocol   imap;</span></div><div class="line"><span class="comment">#               proxy      on;</span></div><div class="line"><span class="comment">#       &#125;</span></div><div class="line"><span class="comment">#&#125;</span></div></pre></td></tr></table></figure>
+<h3 id="问题一"><a href="#问题一" class="headerlink" title="问题一"></a>问题一</h3><p>将 server 节点复制到 <code>/etc/nginx/nginx.conf</code> 里，与 <code>events</code> 、 <code>http</code> 节点同级，执行 <code>sudo nginx -t -c /etc/nginx/nginx.conf</code> 报错，如下<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">nginx: [alert] could not open error <span class="built_in">log</span> file: open() <span class="string">"/var/log/nginx/error.log"</span> failed (13: Permission denied)</div><div class="line">2017/11/02 19:07:12 [warn] 24890<span class="comment">#24890: the "user" directive makes sense only if the master process runs with super-user privileges, ignored in /etc/nginx/nginx.conf:1</span></div><div class="line">2017/11/02 19:07:12 [emerg] 24890<span class="comment">#24890: "server" directive is not allowed here in /etc/nginx/nginx.conf:5</span></div><div class="line">nginx: configuration file /etc/nginx/nginx.conf <span class="built_in">test</span> failed</div></pre></td></tr></table></figure></p>
+<p>重点是 <code>&quot;server&quot; directive is not allowed here in /etc/nginx/nginx.conf</code> ，<code>server</code> 节点不允许配置在那里，很明显不能与 <code>events</code> 、 <code>http</code> 同级。</p>
+<h3 id="解决方案"><a href="#解决方案" class="headerlink" title="解决方案"></a>解决方案</h3><p>将 <code>server</code> 节点配置放到 <code>http</code> 节点下。<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">events &#123;</div><div class="line">    ...</div><div class="line">&#125;</div><div class="line">http &#123;</div><div class="line">    ...</div><div class="line">    server &#123;</div><div class="line">        ...</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>然后执行 <code>nginx -t -c /etx/nginx/nginx.conf</code> 仍然报错，这就有了问题二。</p>
+<h3 id="问题二"><a href="#问题二" class="headerlink" title="问题二"></a>问题二</h3><p>执行 <code>nginx -t -c /etc/nginx/nginx.conf</code> 报错如下<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">nginx: [emerg] a duplicate default server <span class="keyword">for</span> 0.0.0.0:80 <span class="keyword">in</span> /etc/nginx/sites-enabled/default:17</div><div class="line">nginx: configuration file /etc/nginx/nginx.conf <span class="built_in">test</span> failed</div></pre></td></tr></table></figure></p>
+<p>重点是 <code>a duplicate default server for 0.0.0.0:80</code> ，对于 80 端口有两多个默认配置，意思就是你特妹的设置了两个监听 80 端口的 server 配置。<br>于是看到了 http 节点下两句配置语句，意思是将这两处的配置也包含到主配置文件来，这样可能是模块化、配置分工更明确吧。<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">include /etc/nginx/conf.d/*.conf;</div><div class="line">include /etc/nginx/sites-enabled/*;</div></pre></td></tr></table></figure></p>
+<p>第一处查得无配置文件。<br>第二处有一配置文件如下，确实有一个 80 端口配置，自己再配置一个 80 端口造成了冲突。<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div></pre></td><td class="code"><pre><div class="line">server &#123;</div><div class="line">        listen 80 default_server;</div><div class="line">        listen [::]:80 default_server;</div><div class="line"></div><div class="line">        <span class="comment"># SSL configuration</span></div><div class="line">        <span class="comment">#</span></div><div class="line">        <span class="comment"># listen 443 ssl default_server;</span></div><div class="line">        <span class="comment"># listen [::]:443 ssl default_server;</span></div><div class="line">        <span class="comment">#</span></div><div class="line">        <span class="comment"># <span class="doctag">Note:</span> You should disable gzip for SSL traffic.</span></div><div class="line">        <span class="comment"># See: https://bugs.debian.org/773332</span></div><div class="line">        <span class="comment">#</span></div><div class="line">        <span class="comment"># Read up on ssl_ciphers to ensure a secure configuration.</span></div><div class="line">        <span class="comment"># See: https://bugs.debian.org/765782</span></div><div class="line">        <span class="comment">#</span></div><div class="line">        <span class="comment"># Self signed certs generated by the ssl-cert package</span></div><div class="line">        <span class="comment"># Don't use them in a production server!</span></div><div class="line">        <span class="comment">#</span></div><div class="line">        <span class="comment"># include snippets/snakeoil.conf;</span></div><div class="line"></div><div class="line">        root /var/www/html;</div><div class="line"></div><div class="line">        <span class="comment"># Add index.php to the list if you are using PHP</span></div><div class="line">        index index.html index.htm index.nginx-debian.html;</div><div class="line"></div><div class="line">        server_name _;</div><div class="line"></div><div class="line">        location / &#123;</div><div class="line">                <span class="comment"># First attempt to serve request as file, then</span></div><div class="line">                <span class="comment"># as directory, then fall back to displaying a 404.</span></div><div class="line">                try_files <span class="variable">$uri</span> <span class="variable">$uri</span>/ =404;</div><div class="line">                proxy_pass http://127.0.0.1:8080;</div><div class="line">        &#125;</div><div class="line"></div><div class="line">        <span class="comment"># pass the PHP scripts to FastCGI server listening on 127.0.0.1:9000</span></div><div class="line">        <span class="comment">#</span></div><div class="line">        <span class="comment">#location ~ \.php$ &#123;</span></div><div class="line">        <span class="comment">#       include snippets/fastcgi-php.conf;</span></div><div class="line">        <span class="comment">#</span></div><div class="line">        <span class="comment">#       # With php7.0-cgi alone:</span></div><div class="line">        <span class="comment">#       fastcgi_pass 127.0.0.1:9000;</span></div><div class="line">        <span class="comment">#       # With php7.0-fpm:</span></div><div class="line">        <span class="comment">#       fastcgi_pass unix:/run/php/php7.0-fpm.sock;</span></div><div class="line">        <span class="comment">#&#125;</span></div><div class="line"></div><div class="line">        <span class="comment"># deny access to .htaccess files, if Apache's document root</span></div><div class="line">        <span class="comment"># concurs with nginx's one</span></div><div class="line">        <span class="comment">#</span></div><div class="line">        <span class="comment">#location ~ /\.ht &#123;</span></div><div class="line">        <span class="comment">#       deny all;</span></div><div class="line">        <span class="comment">#&#125;</span></div><div class="line">&#125;</div><div class="line"></div><div class="line"></div><div class="line"><span class="comment"># Virtual Host configuration for example.com</span></div><div class="line"><span class="comment">#</span></div><div class="line"><span class="comment"># You can move that to a different file under sites-available/ and symlink that</span></div><div class="line"><span class="comment"># to sites-enabled/ to enable it.</span></div><div class="line"><span class="comment">#</span></div><div class="line"><span class="comment">#server &#123;</span></div><div class="line"><span class="comment">#       listen 80;</span></div><div class="line"><span class="comment">#       listen [::]:80;</span></div><div class="line"><span class="comment">#</span></div><div class="line"><span class="comment">#       server_name example.com;</span></div><div class="line"><span class="comment">#</span></div><div class="line"><span class="comment">#       root /var/www/example.com;</span></div><div class="line"><span class="comment">#       index index.html;</span></div><div class="line"><span class="comment">#</span></div><div class="line"><span class="comment">#       location / &#123;</span></div><div class="line"><span class="comment">#               try_files $uri $uri/ =404;</span></div><div class="line"><span class="comment">#       &#125;</span></div><div class="line"><span class="comment">#&#125;</span></div></pre></td></tr></table></figure></p>
+<h3 id="解决方案-1"><a href="#解决方案-1" class="headerlink" title="解决方案"></a>解决方案</h3><p>两种方案，推荐第二种，感觉分工明确还是比较好的。</p>
+<ul>
+<li>删除 <code>include /etc/nginx/sites-enabled/*;</code> 文件后在 <code>/etc/nginx/nginx.conf</code> 配置 80 内容</li>
+<li>在 <code>include /etc/nginx/sites-enabled/*;</code> 配置要配置的内容。</li>
+</ul>
+<p>执行 <code>sudo nginx -t -c /etc/nginx/nginx.conf</code> 出现输出下面内容说明配置成功。<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">nginx: the configuration file /etc/nginx/nginx.conf syntax is ok</div><div class="line">nginx: configuration file /etc/nginx/nginx.conf <span class="built_in">test</span> is successful</div></pre></td></tr></table></figure></p>
+<p>将 nginx 配置生效<br><code>sudo nginx -s reload</code></p>
+<h3 id="问题三"><a href="#问题三" class="headerlink" title="问题三"></a>问题三</h3><p>配置完 端口代理（80-&gt;8080） 和 https 后，首页通过 https 可以正常访问 tomcat 首页，但是其他路径就会报 404 。</p>
+<h3 id="解决方案-2"><a href="#解决方案-2" class="headerlink" title="解决方案"></a>解决方案</h3><p>猜想 try_files 导致，注释之后就解决了。<br>try_files /4.html /5.html @qwe;</p>
+<h3 id="问题四"><a href="#问题四" class="headerlink" title="问题四"></a>问题四</h3><p>这是自己的部署的问题，本来的时候数据库跟应用服务器放在同一个服务器，由于 https ，配置数据库链接地址是服务器的域名，而不是 ip 地址，而新的服务器没有数据库，这就造成了下面的错误。<br><code>&quot;Could not create connection to database server. Attempted reconnect 3 times. Giving up.&quot;</code></p>
+<h3 id="解决方案-3"><a href="#解决方案-3" class="headerlink" title="解决方案"></a>解决方案</h3><p>意思是 连接不上数据库，重新配置数据库地址后要重启 tomcat 。</p>
+<p>参考</p>
+<blockquote>
+<p><a href="https://stackoverflow.com/questions/41766195/nginx-emerg-server-directive-is-not-allowed-here" target="_blank" rel="external">https://stackoverflow.com/questions/41766195/nginx-emerg-server-directive-is-not-allowed-here</a><br><a href="http://blog.csdn.net/number_chc/article/details/39340603" target="_blank" rel="external">http://blog.csdn.net/number_chc/article/details/39340603</a><br><a href="https://www.shiyanlou.com/questions/8732" target="_blank" rel="external">https://www.shiyanlou.com/questions/8732</a><br><a href="https://www.digitalocean.com/community/tutorials/how-to-set-up-nginx-with-http-2-support-on-ubuntu-16-04" target="_blank" rel="external">https://www.digitalocean.com/community/tutorials/how-to-set-up-nginx-with-http-2-support-on-ubuntu-16-04</a><br><a href="http://xy.uyun.cn/post/80.html" target="_blank" rel="external">http://xy.uyun.cn/post/80.html</a></p>
+</blockquote>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Linux/" rel="tag"># Linux</a>
+          
+            <a href="/tags/Ubuntu/" rel="tag"># Ubuntu</a>
+          
+            <a href="/tags/https/" rel="tag"># https</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/11/01/hexo-g-killed-on-cloud-vps/" rel="next" title="hexo -g Killed">
+                <i class="fa fa-chevron-left"></i> hexo -g Killed
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2017/11/19/first-full-learn-vim/" rel="prev" title="初次比较完整地学习 vim">
+                初次比较完整地学习 vim <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/avatar.png"
+                alt="Kiuber" />
+            
+              <p class="site-author-name" itemprop="name">Kiuber</p>
+              <p class="site-description motion-element" itemprop="description">不要怂就是干</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">34</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">12</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">46</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          <div class="links-of-author motion-element">
+            
+              
+                <span class="links-of-author-item">
+                  <a href="https://github.com/Kiuber/" target="_blank" title="GitHub">
+                    
+                      <i class="fa fa-fw fa-github"></i>GitHub</a>
+                </span>
+              
+                <span class="links-of-author-item">
+                  <a href="http://weibo.com/u/2840614954/" target="_blank" title="Weibo">
+                    
+                      <i class="fa fa-fw fa-weibo"></i>Weibo</a>
+                </span>
+              
+                <span class="links-of-author-item">
+                  <a href="mailto:Kiuber.Zhang@gmail.com" target="_blank" title="Email">
+                    
+                      <i class="fa fa-fw fa-envelope"></i>Email</a>
+                </span>
+              
+            
+          </div>
+
+          
+          
+
+          
+          
+            <div class="links-of-blogroll motion-element links-of-blogroll-inline">
+              <div class="links-of-blogroll-title">
+                <i class="fa  fa-fw fa-globe"></i>
+                小伙伴们
+              </div>
+              <ul class="links-of-blogroll-list">
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="http://gudong.name/" title="咕咚" target="_blank">咕咚</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="http://bfchengnuo.com/" title="冰封承诺" target="_blank">冰封承诺</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="http://zjty5418.github.io/" title="龙啸天" target="_blank">龙啸天</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="http://www.missx.top/" title="国富" target="_blank">国富</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="http://hackone.cc/" title="h4ck0ne" target="_blank">h4ck0ne</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="http://qiuier.github.io/" title="林下清清" target="_blank">林下清清</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="http://blog.csdn.net/gz946" title="GZ946" target="_blank">GZ946</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="http://www.kitandrew.top/" title="Kit.Andrew.Lee" target="_blank">Kit.Andrew.Lee</a>
+                  </li>
+                
+              </ul>
+            </div>
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#环境"><span class="nav-number">1.</span> <span class="nav-text">环境</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#centos"><span class="nav-number">1.1.</span> <span class="nav-text">centos</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#ubuntu"><span class="nav-number">1.2.</span> <span class="nav-text">ubuntu</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Centos-nginx-配置"><span class="nav-number">2.</span> <span class="nav-text">Centos nginx 配置</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Ubuntu-默认配置"><span class="nav-number">3.</span> <span class="nav-text">Ubuntu 默认配置</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#问题一"><span class="nav-number">4.</span> <span class="nav-text">问题一</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#解决方案"><span class="nav-number">5.</span> <span class="nav-text">解决方案</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#问题二"><span class="nav-number">6.</span> <span class="nav-text">问题二</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#解决方案-1"><span class="nav-number">7.</span> <span class="nav-text">解决方案</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#问题三"><span class="nav-number">8.</span> <span class="nav-text">问题三</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#解决方案-2"><span class="nav-number">9.</span> <span class="nav-text">解决方案</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#问题四"><span class="nav-number">10.</span> <span class="nav-text">问题四</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#解决方案-3"><span class="nav-number">11.</span> <span class="nav-text">解决方案</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; 2016 &mdash; <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Kiuber</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Pisces</a> v5.1.3</div>
+
+
+
+
+        
+<div class="busuanzi-count">
+  <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+    <span class="site-uv">
+      本站访客数
+      <span class="busuanzi-value" id="busuanzi_value_site_uv"></span>
+      人次
+    </span>
+  
+
+  
+    <span class="site-pv">
+      本站总访问量
+      <span class="busuanzi-value" id="busuanzi_value_site_pv"></span>
+      次
+    </span>
+  
+</div>
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+  
+  
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="http://cdn.staticfile.org/jquery/2.1.3/jquery.min.js"></script>
+
+  
+  <script type="text/javascript" src="http://cdn.staticfile.org/fastclick/1.0.6/fastclick.min.js"></script>
+
+  
+  <script type="text/javascript" src="http://cdn.staticfile.org/jquery_lazyload/1.9.7/jquery.lazyload.min.js"></script>
+
+  
+  <script type="text/javascript" src="http://cdn.staticfile.org/velocity/1.2.3/velocity.min.js"></script>
+
+  
+  <script type="text/javascript" src="http://cdn.staticfile.org/velocity/1.2.3/velocity.ui.min.js"></script>
+
+  
+  <script type="text/javascript" src="http://cdn.staticfile.org/fancybox/2.1.5/jquery.fancybox.pack.js"></script>
+
+  
+  <script type="text/javascript" src="https://cdn.staticfile.org/three.js/r83/three.min.js"></script>
+
+  
+  <script type="text/javascript" src="/lib/three/canvas_lines.min.js"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.3"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.3"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.3"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.3"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.3"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.3"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.3"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
